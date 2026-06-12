@@ -1474,6 +1474,7 @@ export default function Home() {
 
       {content}
 
+      {/* Conflict-free spacer: keeps the fixed mobile nav from covering the final card. */}
       <div className="bottom-nav-spacer lg:hidden" aria-hidden="true" />
 
       <nav aria-label="주요 학습 메뉴" className="safe-bottom fixed inset-x-0 bottom-0 z-20 border-t border-orange-100 bg-white/95 px-2 pt-1 shadow-[0_-12px_40px_rgba(15,23,42,0.10)] backdrop-blur lg:hidden">

@@ -44,6 +44,7 @@ ruby rt {
   ruby-position: over;
 }
 
+/* Conflict-free mobile safe-area rules retained for the fixed bottom menu. */
 .safe-bottom {
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
