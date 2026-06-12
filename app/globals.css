@@ -12,6 +12,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-bottom: calc(220px + env(safe-area-inset-bottom));
 }
 
 body {

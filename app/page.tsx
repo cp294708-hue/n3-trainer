@@ -1476,7 +1476,7 @@ export default function Home() {
 
       <div className="bottom-nav-spacer lg:hidden" aria-hidden="true" />
 
-      <nav className="safe-bottom fixed inset-x-0 bottom-0 z-20 border-t border-orange-100 bg-white/95 px-2 pt-1 shadow-[0_-12px_40px_rgba(15,23,42,0.10)] backdrop-blur lg:hidden">
+      <nav aria-label="주요 학습 메뉴" className="safe-bottom fixed inset-x-0 bottom-0 z-20 border-t border-orange-100 bg-white/95 px-2 pt-1 shadow-[0_-12px_40px_rgba(15,23,42,0.10)] backdrop-blur lg:hidden">
         <div className="mx-auto grid max-w-3xl grid-cols-8 gap-0.5">
           {nav.map((item) => (
             <button key={item.id} type="button" onClick={() => setTab(item.id)} className={`rounded-xl px-1 py-1 text-[10px] font-black leading-none ${tab === item.id ? "bg-slate-950 text-white" : "text-slate-600"}`}>
