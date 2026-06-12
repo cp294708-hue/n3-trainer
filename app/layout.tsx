@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
-// Conflict-free metadata keeps PWA install behavior and mobile app display settings.
 export const metadata: Metadata = {
   creator: "N3 Trainer",
   category: "education",
