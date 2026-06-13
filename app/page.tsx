@@ -538,7 +538,7 @@ const readingItems: StudyItem[] = [
   },
 ];
 
-const listeningItems: StudyItem[] = [
+const listeningSeedItems: StudyItem[] = [
   {
     id: "l-station",
     kind: "listening",
@@ -592,6 +592,39 @@ const listeningItems: StudyItem[] = [
     choices: ["신청서를 쓰고 제출한다", "접수 후 신청서를 받는다", "신청서를 읽고 버린다", "접수처를 먼저 찾지 않는다"],
   },
 ];
+
+const listeningScenarioSeeds = [
+  ["버스 안내", "乗客の皆様、次の停留所は市役所前です。降りる方はボタンを押してください。", "じょうきゃくの みなさま、つぎの ていりゅうじょは しやくしょまえです。おりる かたは ボタンを おしてください。", "승객 여러분, 다음 정류장은 시청 앞입니다. 내리실 분은 버튼을 눌러 주세요.", "다음 정류장은 시청 앞", "도서관 앞", "학교 정문", "공항 터미널", "장소 안내"],
+  ["회의 변경", "今日の会議は三時から四時半に変わりました。場所は二階の会議室です。", "きょうの かいぎは さんじから よじはんに かわりました。ばしょは にかいの かいぎしつです。", "오늘 회의는 3시에서 4시 반으로 바뀌었습니다. 장소는 2층 회의실입니다.", "4시 반, 2층 회의실", "3시, 1층 로비", "4시, 온라인", "5시 반, 교실", "시간 변경"],
+  ["분실물 문의", "黒い傘をなくしました。駅の受付で聞いてみてください。", "くろい かさを なくしました。えきの うけつけで きいてみてください。", "검은 우산을 잃어버렸습니다. 역 접수처에 물어보세요.", "역 접수처에 문의한다", "새 우산을 산다", "교실에서 기다린다", "친구에게 빌린다", "해야 할 행동"],
+  ["숙제 안내", "作文は金曜日までにメールで提出してください。紙で出さなくてもいいです。", "さくぶんは きんようびまでに メールで ていしゅつしてください。かみで ださなくてもいいです。", "작문은 금요일까지 메일로 제출해 주세요. 종이로 내지 않아도 됩니다.", "금요일까지 메일 제출", "목요일까지 종이 제출", "금요일에 직접 제출", "다음 주 온라인 시험", "제출 조건"],
+  ["날씨 안내", "午後から雨が強くなるそうです。外に出る人は傘を持って行ってください。", "ごごから あめが つよくなるそうです。そとに でる ひとは かさを もっていってください。", "오후부터 비가 강해진다고 합니다. 밖에 나가는 사람은 우산을 가져가세요.", "오후에 비가 강해진다", "아침부터 눈이 온다", "하루 종일 맑다", "밤에 바람이 멈춘다", "날씨 정보"],
+  ["도서관 안내", "図書館は月曜日休みです。返す本は入口の箱に入れてください。", "としょかんは げつようび やすみです。かえす ほんは いりぐちの はこに いれてください。", "도서관은 월요일 휴관입니다. 반납할 책은 입구 상자에 넣어 주세요.", "입구 상자에 반납한다", "월요일에 데스크로 간다", "책을 집에 보관한다", "온라인으로 예약한다", "시설 안내"],
+  ["가게 예약", "予約は七時です。名前を言ってから、窓側の席に座ってください。", "よやくは しちじです。なまえを いってから、まどがわの せきに すわってください。", "예약은 7시입니다. 이름을 말한 뒤 창가 자리에 앉아 주세요.", "7시에 이름을 말한다", "6시에 계산한다", "7시 반에 주문한다", "창문을 닫는다", "예약 확인"],
+  ["시험 준비", "試験の日は受験票と身分証を必ず持ってきてください。鉛筆は会場にあります。", "しけんの ひは じゅけんひょうと みぶんしょうを かならず もってきてください。えんぴつは かいじょうに あります。", "시험 날에는 수험표와 신분증을 반드시 가져오세요. 연필은 시험장에 있습니다.", "수험표와 신분증", "연필과 사전", "학생증과 우산", "신청서와 사진", "준비물"],
+];
+
+const generatedListeningItems: StudyItem[] = Array.from({ length: 32 }, (_, index) => {
+  const seed = listeningScenarioSeeds[index % listeningScenarioSeeds.length];
+  const round = Math.floor(index / listeningScenarioSeeds.length) + 1;
+  const [title, jp, furigana, ko, answer, wrongA, wrongB, wrongC, focus] = seed;
+  return {
+    id: `listen-bank-${index + 1}`,
+    kind: "listening" as const,
+    title: `${title} ${round}`,
+    focus: `${focus} · 청해 ${round}회차`,
+    jp,
+    furigana,
+    ko,
+    koreanHint: "청해는 숫자·시간·장소·해야 할 행동을 먼저 메모하면 한국어로 해석하기 전에 정답 단서가 보입니다.",
+    pitfall: "비슷한 숫자와 장소 표현을 섞어 듣기 쉽습니다. 마지막 지시문보다 핵심 조건을 우선 확인하세요.",
+    answer,
+    choices: shuffleChoices([answer, wrongA, wrongB, wrongC], `listen-bank-${index + 1}`),
+  };
+});
+
+const listeningItems: StudyItem[] = [...listeningSeedItems, ...generatedListeningItems];
+
 
 const n3VocabSeeds = [
   ["合格", "ごうかく", "합격", "試験に合格するために、毎日練習しています。", "しけんに ごうかくするために、まいにち れんしゅうしています。", "시험에 합격하기 위해 매일 연습하고 있습니다."],
@@ -759,11 +792,29 @@ const n3CoreGrammarItems: StudyItem[] = [
   })),
 ];
 
-const levelReadingItems: StudyItem[] = readingItems.flatMap((item, index) => [
-  { ...item, id: `${item.id}-easy`, focus: `쉬움 · ${item.focus}`, koreanHint: `${item.koreanHint} 먼저 시간·장소·행동만 표시하세요.` },
-  { ...item, id: `${item.id}-normal`, focus: `보통 · ${item.focus}`, jp: `${item.jp} そのため、答えを確認してから次に進んでください。`, furigana: `${item.furigana} そのため、こたえを かくにんしてから つぎに すすんでください。`, ko: `${item.ko} 그래서 답을 확인한 뒤 다음으로 넘어가 주세요.` },
-  { ...item, id: `${item.id}-hard`, focus: `어려움 · ${item.focus}`, jp: `以前は難しいと思っていましたが、${item.jp}`, furigana: `いぜんは むずかしいと おもっていましたが、${item.furigana}`, ko: `전에는 어렵다고 생각했지만, ${item.ko}`, pitfall: `${item.pitfall} 어려움 문제는 앞뒤 역접과 이유를 함께 보세요.` },
-].map((entry, variant) => ({ ...entry, id: `${entry.id}-${index}-${variant}` })));
+const readingVariants = [
+  { label: "쉬움", prefix: "", suffix: "", hint: "먼저 시간·장소·행동만 표시하세요." },
+  { label: "보통", prefix: "", suffix: " そのため、答えを確認してから次に進んでください。", hint: "뒤 문장의 이유 연결을 확인하세요." },
+  { label: "어려움", prefix: "以前は難しいと思っていましたが、", suffix: "", hint: "앞뒤 역접과 이유를 함께 보세요." },
+  { label: "시간", prefix: "昨日の案内によると、", suffix: " 予定が変わる場合は受付に聞いてください。", hint: "시간 표현을 동그라미 치고 읽으세요." },
+  { label: "장소", prefix: "駅から遠いですが、", suffix: " 場所を確認してから出発しましょう。", hint: "장소와 이동 동사를 먼저 찾으세요." },
+  { label: "요청", prefix: "先生は学生に、", suffix: " と説明しました。", hint: "누가 누구에게 무엇을 부탁했는지 확인하세요." },
+  { label: "이유", prefix: "台風のため、", suffix: " 理由を考えると答えが選びやすいです。", hint: "ため/ので 뒤의 결과를 연결하세요." },
+  { label: "결론", prefix: "つまり、", suffix: " 最後の一文が結論です。", hint: "마지막 문장의 결론 단서를 보세요." },
+] as const;
+
+const levelReadingItems: StudyItem[] = readingItems.flatMap((item, index) =>
+  readingVariants.map((variant, variantIndex) => ({
+    ...item,
+    id: `${item.id}-${variant.label}-${index}-${variantIndex}`,
+    focus: `${variant.label} · ${item.focus}`,
+    jp: `${variant.prefix}${item.jp}${variant.suffix}`,
+    furigana: `${item.furigana}${variant.suffix ? " そのため、こたえを かくにんしてから つぎに すすんでください。" : ""}`,
+    ko: item.ko,
+    koreanHint: `${item.koreanHint} ${variant.hint}`,
+    pitfall: variant.label === "어려움" ? `${item.pitfall} 어려움 문제는 앞뒤 역접과 이유를 함께 보세요.` : item.pitfall,
+  }))
+);
 
 const allItems = [...expandedVocabItems, ...n3CoreGrammarItems, ...levelReadingItems, ...listeningItems];
 
@@ -1114,19 +1165,23 @@ function getWeakness(progress: Progress) {
   return entries[0]?.answered ? entries[0].kind : "vocab";
 }
 
-function pickAdaptiveItem(pool: StudyItem[], progress: Progress, salt: number) {
+function pickAdaptiveItem(pool: StudyItem[], progress: Progress, salt: number, excludedIds: Set<string> = new Set(), previousId?: string) {
   const recent = new Set(progress.recentIds ?? []);
   const accuracy = getAccuracy(progress);
   const weak = getWeakness(progress);
   const targetPool = pool.filter((item) => (accuracy < 65 ? item.kind === weak || item.focus.includes("쉬움") : accuracy > 85 ? !item.focus.includes("쉬움") : true));
-  const available = (targetPool.length ? targetPool : pool).filter((item) => !recent.has(item.id));
-  const source = available.length ? available : pool;
-  const seed = (progress.totalAnswered ?? 0) * 31 + salt + getChoiceSeed(weak);
+  const preferred = targetPool.length ? targetPool : pool;
+  const withoutSession = preferred.filter((item) => !excludedIds.has(item.id) && item.id !== previousId);
+  const withoutRecent = withoutSession.filter((item) => !recent.has(item.id));
+  const withoutPrevious = preferred.filter((item) => item.id !== previousId);
+  const source = withoutRecent.length ? withoutRecent : withoutSession.length ? withoutSession : withoutPrevious.length ? withoutPrevious : preferred;
+  const seed = (progress.totalAnswered ?? 0) * 31 + salt * 17 + excludedIds.size * 13 + getChoiceSeed(weak);
   return source[Math.abs(seed) % source.length];
 }
 
 function BankMode({ title, pool, progress, setProgress, mode = "adaptive", onAudioBlocked }: { title: string; pool: StudyItem[]; progress: Progress; setProgress: React.Dispatch<React.SetStateAction<Progress>>; mode?: "adaptive" | "wrong" | "mock"; onAudioBlocked?: () => void }) {
   const [salt, setSalt] = useState(1);
+  const [sessionSeenIds, setSessionSeenIds] = useState<Set<string>>(() => new Set());
   const [item, setItem] = useState(() => pickAdaptiveItem(pool, progress, salt));
   const [pendingChoice, setPendingChoice] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
@@ -1148,8 +1203,13 @@ function BankMode({ title, pool, progress, setProgress, mode = "adaptive", onAud
 
   const next = () => {
     const nextSalt = salt + 1;
+    const shouldAvoidSessionRepeats = mode !== "wrong";
+    const nextSeenIds = shouldAvoidSessionRepeats ? new Set([...sessionSeenIds, item.id]) : sessionSeenIds;
+    const exhausted = shouldAvoidSessionRepeats && nextSeenIds.size >= pool.length;
+    const effectiveSeenIds = exhausted ? new Set<string>([item.id]) : nextSeenIds;
     setSalt(nextSalt);
-    setItem(pickAdaptiveItem(pool, progress, nextSalt));
+    setSessionSeenIds(effectiveSeenIds);
+    setItem(pickAdaptiveItem(pool, progress, nextSalt, effectiveSeenIds, item.id));
     setPendingChoice(null);
     setRevealed(false);
   };
