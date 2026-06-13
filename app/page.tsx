@@ -923,7 +923,7 @@ async function speakJapanese(text: string, onBlocked?: () => void) {
 function ExampleCard({ example, compact = false, furiganaMode = "exam", revealed = false, answerTerm, onAudioBlocked }: { example: Example; compact?: boolean; furiganaMode?: FuriganaMode; revealed?: boolean; answerTerm?: string; onAudioBlocked?: () => void }) {
   const showFullFurigana = revealed || furiganaMode === "learning";
   return (
-    <div className="rounded-3xl border border-orange-100 bg-white/90 p-4 shadow-sm">
+    <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className={`${compact ? "text-lg" : "text-xl"} japanese-line font-black leading-relaxed text-slate-950`}>{renderJapaneseWithRuby(example.jp, furiganaMode, revealed, answerTerm)}</p>
@@ -944,9 +944,9 @@ function ExampleCard({ example, compact = false, furiganaMode = "exam", revealed
 
 function StatPill({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-2xl bg-white/85 p-3 text-center shadow-sm ring-1 ring-orange-100">
-      <p className="text-xs font-bold text-slate-500">{label}</p>
-      <p className="mt-1 text-xl font-black text-slate-950">{value}</p>
+    <div className="rounded-[1.5rem] border border-black/5 bg-white p-4 text-center shadow-sm">
+      <p className="text-xs font-bold text-stone-500">{label}</p>
+      <p className="mt-1 text-xl font-black text-black">{value}</p>
     </div>
   );
 }
@@ -1111,7 +1111,7 @@ function Diagnostic({ progress, setProgress, onAudioBlocked }: { progress: Progr
         const pending = pendingAnswers[question.id];
         const choices = shuffleChoices(question.choices, question.id);
         return (
-          <div key={question.id} className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
+          <div key={question.id} className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
             <p className="mb-3 text-sm font-black text-slate-500">Q{idx + 1}. {question.prompt}</p>
             <ExampleCard example={question.example} compact furiganaMode={progress.furiganaMode} revealed={Boolean(selected)} onAudioBlocked={onAudioBlocked} />
             <div className="mt-3 grid gap-2">
@@ -1353,15 +1353,14 @@ function Today({ progress, setProgress, setTab }: { progress: Progress; setProgr
         </div>
       </div>
 
-      <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
-        <h3 className="text-lg font-black">제로베이스 한국어 화자 생존 규칙</h3>
-        <div className="mt-3 grid gap-2">
-          {zeroBaseRules.map((rule) => (
-            <div key={rule.title} className="rounded-2xl bg-slate-50 p-3">
-              <p className="font-black text-slate-950">{rule.title}</p>
-              <p className="mt-1 text-sm font-bold leading-6 text-slate-600">{rule.body}</p>
-            </div>
-          ))}
+      <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-orange-500">30일 플랜</p>
+            <h3 className="mt-2 text-lg font-black text-black">Day {currentDay} · {todayPlan.phase}</h3>
+            <p className="mt-1 text-sm font-bold text-stone-500">{todayPlan.focus}</p>
+          </div>
+          <button type="button" onClick={completeToday} className="shrink-0 rounded-2xl bg-black px-4 py-3 text-xs font-black text-white">완료</button>
         </div>
       </div>
 
@@ -1554,7 +1553,7 @@ export default function Home() {
       <aside className="fixed right-6 top-6 hidden w-48 rounded-[2rem] bg-white/90 p-3 shadow-xl ring-1 ring-orange-100 backdrop-blur lg:block">
         <p className="px-2 text-xs font-black text-slate-500">메뉴</p>
         <div className="mt-2 grid gap-1">
-          {nav.map((item) => <button key={item.id} type="button" onClick={() => setTab(item.id)} className={`rounded-2xl px-3 py-2 text-left text-sm font-black ${tab === item.id ? "bg-slate-950 text-white" : "text-slate-700 hover:bg-orange-50"}`}>{item.icon} {item.label}</button>)}
+          {nav.map((item) => <button key={item.id} type="button" onClick={() => setTab(item.id)} className={`rounded-2xl px-3 py-2 text-left text-sm font-black ${tab === item.id ? "bg-black text-white" : "text-stone-700 hover:bg-lime-50"}`}>{item.icon} {item.label}</button>)}
         </div>
       </aside>
     </main>
