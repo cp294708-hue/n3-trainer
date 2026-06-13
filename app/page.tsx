@@ -923,7 +923,7 @@ async function speakJapanese(text: string, onBlocked?: () => void) {
 function ExampleCard({ example, compact = false, furiganaMode = "exam", revealed = false, answerTerm, onAudioBlocked }: { example: Example; compact?: boolean; furiganaMode?: FuriganaMode; revealed?: boolean; answerTerm?: string; onAudioBlocked?: () => void }) {
   const showFullFurigana = revealed || furiganaMode === "learning";
   return (
-    <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
+    <div className="rounded-[2rem] border border-[#E7E7F2] bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className={`${compact ? "text-lg" : "text-xl"} japanese-line font-black leading-relaxed text-slate-950`}>{renderJapaneseWithRuby(example.jp, furiganaMode, revealed, answerTerm)}</p>
@@ -932,7 +932,7 @@ function ExampleCard({ example, compact = false, furiganaMode = "exam", revealed
         <button
           type="button"
           onClick={() => speakJapanese(example.jp, onAudioBlocked)}
-          className="shrink-0 rounded-full bg-orange-500 px-3 py-2 text-sm font-black text-white shadow-lg shadow-orange-200 active:scale-95"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#6C63FF] text-sm font-black text-white shadow-sm active:scale-95"
           aria-label="일본어 음성 듣기"
         >
           🔊
@@ -942,12 +942,61 @@ function ExampleCard({ example, compact = false, furiganaMode = "exam", revealed
   );
 }
 
-function StatPill({ label, value }: { label: string; value: string | number }) {
+function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <div className={`rounded-[2rem] border border-[#E7E7F2] bg-white shadow-[0_8px_24px_rgba(17,24,39,0.04)] ${className}`}>{children}</div>;
+}
+
+function StatCard({ label, value, tone = "primary" }: { label: string; value: string | number; tone?: "primary" | "accent" | "plain" }) {
+  const toneClass = tone === "primary" ? "bg-[#F0EFFF] text-[#6C63FF]" : tone === "accent" ? "bg-[#FFF4E1] text-[#B86B00]" : "bg-[#F8F8FC] text-[#111827]";
   return (
-    <div className="rounded-[1.5rem] border border-black/5 bg-white p-4 text-center shadow-sm">
-      <p className="text-xs font-bold text-stone-500">{label}</p>
-      <p className="mt-1 text-xl font-black text-black">{value}</p>
-    </div>
+    <Card className="p-4 text-center">
+      <p className="text-xs font-bold text-[#6B7280]">{label}</p>
+      <p className={`mt-2 rounded-2xl px-2 py-2 text-xl font-black ${toneClass}`}>{value}</p>
+    </Card>
+  );
+}
+
+function StatPill({ label, value }: { label: string; value: string | number }) {
+  return <StatCard label={label} value={value} />;
+}
+
+function HeroSection({ currentDay, progress, onStart }: { currentDay: number; progress: Progress; onStart: () => void }) {
+  const dayProgress = Math.round((currentDay / 30) * 100);
+  const remaining = Math.max(0, 30 - currentDay);
+  return (
+    <Card className="overflow-hidden p-6">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm font-bold text-[#6B7280]">Hi, 오늘도 N3 👋</p>
+          <h2 className="mt-2 text-3xl font-black leading-tight text-[#111827]">오늘 학습을 시작해요</h2>
+          <p className="mt-3 text-sm font-bold text-[#6B7280]">Day {currentDay}/30 · 남은 학습 {remaining}일</p>
+        </div>
+        <button type="button" onClick={onStart} className="rounded-full bg-[#6C63FF] px-4 py-3 text-sm font-black text-white shadow-[0_10px_20px_rgba(108,99,255,0.22)]">시작</button>
+      </div>
+      <div className="mt-6">
+        <div className="flex items-center justify-between text-xs font-black text-[#6B7280]"><span>Day 진행도</span><span>{dayProgress}%</span></div>
+        <div className="mt-2 h-3 overflow-hidden rounded-full bg-[#F0EFFF]"><div className="h-full rounded-full bg-[#6C63FF]" style={{ width: `${dayProgress}%` }} /></div>
+      </div>
+      <div className="mt-5 grid grid-cols-3 gap-3">
+        <div className="rounded-3xl bg-[#F8F8FC] p-3 text-center"><p className="text-xs font-bold text-[#6B7280]">Streak</p><p className="mt-1 text-lg font-black text-[#111827]">{progress.streak}일</p></div>
+        <div className="rounded-3xl bg-[#F8F8FC] p-3 text-center"><p className="text-xs font-bold text-[#6B7280]">오늘</p><p className="mt-1 text-lg font-black text-[#111827]">{progress.todayAnswered ?? 0}</p></div>
+        <div className="rounded-3xl bg-[#F8F8FC] p-3 text-center"><p className="text-xs font-bold text-[#6B7280]">정답률</p><p className="mt-1 text-lg font-black text-[#111827]">{getAccuracy(progress)}%</p></div>
+      </div>
+    </Card>
+  );
+}
+
+function TabBar({ tab, setTab }: { tab: Tab; setTab: (tab: Tab) => void }) {
+  return (
+    <nav aria-label="JLPT N3 주요 학습 메뉴" className="safe-bottom fixed inset-x-0 bottom-0 z-20 border-t border-[#E7E7F2] bg-white/95 px-2 pt-2 shadow-[0_-10px_30px_rgba(17,24,39,0.08)] backdrop-blur lg:hidden">
+      <div className="mx-auto grid max-w-3xl grid-cols-8 gap-1">
+        {nav.map((item) => (
+          <button key={item.id} type="button" onClick={() => setTab(item.id)} className={`rounded-2xl px-0.5 py-2 text-[10px] font-black leading-none transition ${tab === item.id ? "bg-[#6C63FF] text-white" : "text-[#9CA3AF]"}`}>
+            <span className="block text-base leading-none">{item.icon}</span><span className="mt-1 block">{item.label}</span>
+          </button>
+        ))}
+      </div>
+    </nav>
   );
 }
 
@@ -1035,8 +1084,8 @@ function Trainer({ title, items, progress, setProgress, onAudioBlocked }: { titl
               : revealed && choice === pendingChoice
                 ? "border-rose-500 bg-rose-50 text-rose-950"
                 : pendingChoice === choice
-                  ? "border-blue-500 bg-blue-50 text-blue-950"
-                  : "border-slate-200 bg-white text-slate-800";
+                  ? "border-[#6C63FF] bg-[#F0EFFF] text-[#111827]"
+                  : "border-[#E7E7F2] bg-white text-black shadow-sm";
             return (
               <button key={`${choice}-${choiceIndex}`} type="button" disabled={revealed} onClick={() => setPendingChoice(choice)} className={`rounded-2xl border-2 p-4 text-left font-black shadow-sm active:scale-[0.99] disabled:opacity-100 ${state}`}>
                 {choice}
@@ -1045,17 +1094,17 @@ function Trainer({ title, items, progress, setProgress, onAudioBlocked }: { titl
           })}
         </div>
         {!revealed && (
-          <button type="button" disabled={!pendingChoice} onClick={confirmAnswer} className="mt-3 w-full rounded-2xl bg-orange-500 py-3 font-black text-white shadow-lg shadow-orange-100 disabled:bg-slate-300 disabled:shadow-none">
+          <button type="button" disabled={!pendingChoice} onClick={confirmAnswer} className="mt-4 w-full rounded-2xl bg-[#6C63FF] py-3 font-black text-white shadow-[0_10px_22px_rgba(108,99,255,0.22)] disabled:bg-[#E5E7EB] disabled:text-[#9CA3AF] disabled:shadow-none">
             정답 확인
           </button>
         )}
       </div>
 
       {revealed && (
-        <div className="rounded-3xl border border-orange-100 bg-white p-4 shadow-sm">
+        <div className="rounded-3xl border border-orange-100 bg-white p-4 shadow-[0_8px_24px_rgba(17,24,39,0.04)]">
           <p className={`text-lg font-black ${correct ? "text-emerald-700" : "text-rose-700"}`}>{correct ? "정답! 바로 다음 복습 간격이 늘어났어요." : `오답: 정답은 ${item.answer}`}</p>
-          <p className="mt-3 rounded-2xl bg-orange-50 p-3 text-sm font-bold leading-6 text-orange-950">🇰🇷 해석: {item.ko}</p>
-          <p className="mt-2 rounded-2xl bg-slate-50 p-3 text-xs font-bold leading-5 text-slate-600">요미가나: {item.furigana}</p>
+          <p className="mt-3 rounded-2xl bg-[#FFF4E1] p-4 text-sm font-bold leading-6 text-black">🇰🇷 해석: {item.ko}</p>
+          <p className="mt-2 rounded-2xl bg-[#F8F8FC] p-4 text-xs font-bold leading-5 text-stone-600">요미가나: {item.furigana}</p>
           <p className="mt-3 text-sm font-bold leading-6 text-slate-700">💡 한국어식 감각: {item.koreanHint}</p>
           <p className="mt-2 text-sm font-bold leading-6 text-rose-800">⚠️ 자주 헷갈림: {item.pitfall}</p>
           <button type="button" onClick={() => { setPendingChoice(null); setRevealed(false); setIndex((value) => value + 1); }} className="mt-4 w-full rounded-2xl bg-slate-950 py-3 font-black text-white">
@@ -1111,7 +1160,7 @@ function Diagnostic({ progress, setProgress, onAudioBlocked }: { progress: Progr
         const pending = pendingAnswers[question.id];
         const choices = shuffleChoices(question.choices, question.id);
         return (
-          <div key={question.id} className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
+          <div key={question.id} className="rounded-[2rem] border border-[#E7E7F2] bg-white p-5 shadow-sm">
             <p className="mb-3 text-sm font-black text-slate-500">Q{idx + 1}. {question.prompt}</p>
             <ExampleCard example={question.example} compact furiganaMode={progress.furiganaMode} revealed={Boolean(selected)} onAudioBlocked={onAudioBlocked} />
             <div className="mt-3 grid gap-2">
@@ -1127,14 +1176,14 @@ function Diagnostic({ progress, setProgress, onAudioBlocked }: { progress: Progr
               })}
             </div>
             {!selected && (
-              <button type="button" disabled={!pending} onClick={() => confirmQuestion(question)} className="mt-3 w-full rounded-2xl bg-orange-500 py-3 font-black text-white shadow-lg shadow-orange-100 disabled:bg-slate-300 disabled:shadow-none">
+              <button type="button" disabled={!pending} onClick={() => confirmQuestion(question)} className="mt-4 w-full rounded-2xl bg-[#6C63FF] py-3 font-black text-white shadow-[0_10px_22px_rgba(108,99,255,0.22)] disabled:bg-[#E5E7EB] disabled:text-[#9CA3AF] disabled:shadow-none">
                 정답 확인
               </button>
             )}
             {selected && (
               <div className="mt-3 rounded-2xl bg-slate-50 p-3">
                 <p className={`font-black ${selected === question.answer ? "text-emerald-700" : "text-rose-700"}`}>{selected === question.answer ? "정답입니다." : `오답입니다. 정답: ${question.answer}`}</p>
-                <p className="mt-3 rounded-2xl bg-orange-50 p-3 text-sm font-bold leading-6 text-orange-950">🇰🇷 해석: {question.example.ko}</p>
+                <p className="mt-3 rounded-2xl bg-[#FFF4E1] p-4 text-sm font-bold leading-6 text-black">🇰🇷 해석: {question.example.ko}</p>
                 <p className="mt-2 rounded-2xl bg-slate-100 p-3 text-xs font-bold leading-5 text-slate-600">요미가나: {question.example.furigana}</p>
                 <p className="mt-2 text-sm font-bold leading-6 text-slate-700">{question.explanation}</p>
               </div>
@@ -1216,29 +1265,29 @@ function BankMode({ title, pool, progress, setProgress, mode = "adaptive", onAud
 
   return (
     <section className="space-y-4">
-      <div className="rounded-[2rem] bg-gradient-to-br from-slate-950 to-orange-700 p-5 text-white shadow-xl">
-        <p className="text-sm font-black text-orange-100">무제한 문제은행 · {mode === "wrong" ? "오답 재시험" : mode === "mock" ? "모의고사" : "자동 난이도"}</p>
-        <h2 className="mt-1 text-2xl font-black">{title}</h2>
-        <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs font-black">
-          <span className="rounded-2xl bg-white/10 p-2">오늘 {progress.todayAnswered ?? 0}문제</span>
-          <span className="rounded-2xl bg-white/10 p-2">누적 {progress.totalAnswered ?? 0}문제</span>
-          <span className="rounded-2xl bg-white/10 p-2">정답률 {accuracy}%</span>
+      <div className="rounded-[2rem] border border-[#E7E7F2] bg-white p-5 shadow-sm">
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#6C63FF]">{mode === "wrong" ? "오답 재시험" : mode === "mock" ? "미니 모의" : "문제은행"}</p>
+        <h2 className="mt-2 text-2xl font-black text-black">{title}</h2>
+        <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs font-black text-black">
+          <span className="rounded-2xl bg-[#F0EFFF] p-2">오늘 {progress.todayAnswered ?? 0}</span>
+          <span className="rounded-2xl bg-[#F8F8FC] p-2">누적 {progress.totalAnswered ?? 0}</span>
+          <span className="rounded-2xl bg-[#FFF4E1] p-2">정답률 {accuracy}%</span>
         </div>
       </div>
 
-      <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
+      <div className="rounded-[2rem] border border-[#E7E7F2] bg-white p-5 shadow-sm">
         <div className="flex items-center justify-between gap-2">
           <div>
-            <p className="text-xs font-black uppercase text-orange-600">{item.kind} · {item.focus}</p>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C63FF]">{item.kind} · {item.focus}</p>
             <h3 className="mt-1 text-2xl font-black text-slate-950">{item.title}</h3>
           </div>
-          <button type="button" onClick={() => speakJapanese(item.title, onAudioBlocked)} className="rounded-full bg-orange-500 px-3 py-2 text-xs font-black text-white shadow-sm shadow-orange-100">🔊 발음</button>
+          <button type="button" onClick={() => speakJapanese(item.title, onAudioBlocked)} className="grid h-10 w-10 place-items-center rounded-full bg-[#6C63FF] text-xs font-black text-white shadow-sm">🔊</button>
         </div>
       </div>
 
       <ExampleCard example={item} furiganaMode={progress.furiganaMode} revealed={revealed} answerTerm={item.kind === "vocab" ? item.title : undefined} onAudioBlocked={onAudioBlocked} />
 
-      <div className="rounded-3xl bg-white/90 p-3 shadow-sm ring-1 ring-orange-100">
+      <div className="rounded-[2rem] border border-[#E7E7F2] bg-white p-4 shadow-[0_8px_24px_rgba(17,24,39,0.04)]">
         <p className="px-1 pb-2 text-xs font-black text-slate-500">정답은 선택 전 절대 표시되지 않습니다. 답을 고른 뒤 확인하세요.</p>
         <div className="grid gap-2">
           {choices.map((choice, choiceIndex) => {
@@ -1247,22 +1296,22 @@ function BankMode({ title, pool, progress, setProgress, mode = "adaptive", onAud
               : revealed && choice === pendingChoice
                 ? "border-rose-500 bg-rose-50 text-rose-950"
                 : pendingChoice === choice
-                  ? "border-blue-500 bg-blue-50 text-blue-950"
-                  : "border-slate-200 bg-white text-slate-800";
+                  ? "border-[#6C63FF] bg-[#F0EFFF] text-[#111827]"
+                  : "border-[#E7E7F2] bg-white text-black shadow-sm";
             return <button key={`${choice}-${choiceIndex}`} type="button" disabled={revealed} onClick={() => setPendingChoice(choice)} className={`rounded-2xl border-2 p-4 text-left font-black disabled:opacity-100 ${state}`}>{choice}</button>;
           })}
         </div>
-        {!revealed ? <button type="button" disabled={!pendingChoice} onClick={confirm} className="mt-3 w-full rounded-2xl bg-orange-500 py-3 font-black text-white shadow-lg shadow-orange-100 disabled:bg-slate-300 disabled:shadow-none">정답 확인</button> : null}
+        {!revealed ? <button type="button" disabled={!pendingChoice} onClick={confirm} className="mt-4 w-full rounded-2xl bg-[#6C63FF] py-3 font-black text-white shadow-[0_10px_22px_rgba(108,99,255,0.22)] disabled:bg-[#E5E7EB] disabled:text-[#9CA3AF] disabled:shadow-none">정답 확인</button> : null}
       </div>
 
       {revealed && (
-        <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
+        <div className="rounded-[2rem] border border-[#E7E7F2] bg-white p-5 shadow-sm">
           <p className={`text-lg font-black ${correct ? "text-emerald-700" : "text-rose-700"}`}>{correct ? "+12 XP 정답" : `+6 XP 오답 · 정답은 ${item.answer}`}</p>
-          <p className="mt-3 rounded-2xl bg-orange-50 p-3 text-sm font-bold leading-6 text-orange-950">🇰🇷 해석: {item.ko}</p>
-          <p className="mt-2 rounded-2xl bg-slate-50 p-3 text-xs font-bold leading-5 text-slate-600">요미가나: {item.furigana}</p>
+          <p className="mt-3 rounded-2xl bg-[#FFF4E1] p-4 text-sm font-bold leading-6 text-black">🇰🇷 해석: {item.ko}</p>
+          <p className="mt-2 rounded-2xl bg-[#F8F8FC] p-4 text-xs font-bold leading-5 text-stone-600">요미가나: {item.furigana}</p>
           <p className="mt-3 text-sm font-bold leading-6 text-slate-700">💡 {item.koreanHint}</p>
           <p className="mt-2 text-sm font-bold leading-6 text-rose-800">⚠️ {item.pitfall}</p>
-          <button type="button" onClick={next} className="mt-4 w-full rounded-2xl bg-orange-500 py-3 font-black text-white">계속 풀기</button>
+          <button type="button" onClick={next} className="mt-4 w-full rounded-2xl bg-[#6C63FF] py-3 font-black text-white">계속 풀기</button>
         </div>
       )}
     </section>
@@ -1274,10 +1323,10 @@ function FreeStudy({ progress, setProgress, onAudioBlocked }: { progress: Progre
   const pool = scope === "all" ? allItems : allItems.filter((item) => item.kind === scope);
   return (
     <section className="space-y-4">
-      <div className="rounded-3xl bg-white p-3 shadow-sm ring-1 ring-orange-100">
+      <div className="rounded-[2rem] border border-[#E7E7F2] bg-white p-4 shadow-[0_8px_24px_rgba(17,24,39,0.04)]">
         <p className="text-sm font-black text-slate-500">자유 학습 모드: 하루 제한 없이 수백 문제까지 계속 풉니다.</p>
         <div className="mt-3 grid grid-cols-5 gap-1">
-          {(["all", "vocab", "grammar", "reading", "listening"] as const).map((kind) => <button key={kind} onClick={() => setScope(kind)} className={`rounded-xl px-2 py-2 text-xs font-black ${scope === kind ? "bg-slate-950 text-white" : "bg-slate-100 text-slate-700"}`}>{kind === "all" ? "전체" : kind}</button>)}
+          {(["all", "vocab", "grammar", "reading", "listening"] as const).map((kind) => <button key={kind} onClick={() => setScope(kind)} className={`rounded-xl px-2 py-2 text-xs font-black ${scope === kind ? "bg-[#6C63FF] text-white" : "bg-[#F8F8FC] text-stone-700"}`}>{kind === "all" ? "전체" : kind}</button>)}
         </div>
       </div>
       <BankMode key={scope} title={scope === "all" ? "랜덤 JLPT N3 문제" : `랜덤 ${scope} 문제`} pool={pool} progress={progress} setProgress={setProgress} onAudioBlocked={onAudioBlocked} />
@@ -1309,54 +1358,44 @@ function Today({ progress, setProgress, setTab }: { progress: Progress; setProgr
     });
   };
 
-  const primaryActions: { label: string; helper: string; tab: Tab; style: string }[] = [
-    { label: "무한 문제풀이", helper: "자동 난이도", tab: "free", style: "bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-orange-200" },
-    { label: "랜덤 어휘", helper: "N3 단어 1000+", tab: "vocab", style: "bg-slate-950 text-white shadow-slate-300" },
-    { label: "랜덤 문법", helper: "한국인 약점 우선", tab: "grammar", style: "bg-indigo-600 text-white shadow-indigo-200" },
-    { label: "랜덤 독해", helper: "난이도 자동 조절", tab: "reading", style: "bg-emerald-600 text-white shadow-emerald-200" },
-    { label: "오답 복습", helper: progress.wrong.length === 0 ? "아직 오답 없음" : `${progress.wrong.length}개 재시험`, tab: "wrong", style: "bg-gradient-to-br from-slate-950 to-orange-600 text-white shadow-orange-200" },
+  const primaryActions: { label: string; helper: string; tab: Tab; accent: string }[] = [
+    { label: "문제", helper: "추천 문제", tab: "free", accent: "bg-[#F0EFFF]" },
+    { label: "어휘", helper: "N3 단어", tab: "vocab", accent: "bg-[#FFF4E1]" },
+    { label: "문법", helper: "핵심 패턴", tab: "grammar", accent: "bg-[#F0EFFF]" },
+    { label: "독해", helper: "지문 훈련", tab: "reading", accent: "bg-[#F8F8FC]" },
+    { label: "청해", helper: "듣기 단서", tab: "listening", accent: "bg-[#F0EFFF]" },
+    { label: "오답", helper: progress.wrong.length === 0 ? "아직 없음" : `${progress.wrong.length}개`, tab: "wrong", accent: "bg-[#FFF4E1]" },
+    { label: "기록", helper: `${getAccuracy(progress)}% 정답률`, tab: "dashboard", accent: "bg-[#F0EFFF]" },
   ];
 
   return (
-    <section className="space-y-4">
-      <div className="rounded-[2rem] bg-slate-950 p-4 text-white shadow-xl">
-        <p className="text-xs font-black text-orange-200">문제은행 홈 · Day {currentDay} 보조 플랜</p>
-        <h2 className="mt-1 text-2xl font-black">오늘도 제한 없이 계속 풀기</h2>
-        <p className="mt-2 text-xs font-bold leading-5 text-slate-200">30일 계획과 상관없이 원하는 만큼 문제를 풀고 XP를 누적하세요.</p>
-      </div>
+    <section className="space-y-5">
+      <HeroSection currentDay={currentDay} progress={progress} onStart={() => setTab("free")} />
 
-      <div className="grid grid-cols-2 gap-2">
+      <button type="button" onClick={() => setTab("free")} className="w-full rounded-[2rem] bg-[#6C63FF] p-5 text-left shadow-[0_12px_28px_rgba(108,99,255,0.18)] active:scale-[0.99]">
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-white/80">오늘 추천 학습</p>
+        <div className="mt-3 flex items-end justify-between gap-4">
+          <div>
+            <h3 className="text-2xl font-black text-white">문제은행 10분</h3>
+            <p className="mt-2 text-sm font-bold text-white/80">반복 없이 랜덤 문제를 이어서 풀어요.</p>
+          </div>
+          <span className="rounded-full bg-white px-4 py-2 text-sm font-black text-[#6C63FF]">시작</span>
+        </div>
+      </button>
+
+      <div className="grid grid-cols-2 gap-3">
         {primaryActions.map((action, index) => (
-          <button key={action.tab} type="button" onClick={() => setTab(action.tab)} className={`rounded-3xl p-4 text-left shadow-lg active:scale-[0.99] ${action.style} ${index === 0 || action.tab === "wrong" ? "col-span-2" : ""}`}>
-            <span className="block text-lg font-black">{action.label}</span>
-            <span className="mt-1 block text-xs font-bold opacity-80">{action.helper}</span>
+          <button key={action.tab} type="button" onClick={() => setTab(action.tab)} className={`rounded-[1.75rem] border border-[#E7E7F2] p-4 text-left shadow-sm active:scale-[0.99] ${action.accent} ${index === 0 ? "col-span-2" : ""}`}>
+            <span className="block text-xl font-black text-black">{action.label}</span>
+            <span className="mt-2 block text-xs font-bold text-[#6B7280]">{action.helper}</span>
           </button>
         ))}
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
-        <StatPill label="연속" value={`${progress.streak}일`} />
-        <StatPill label="오늘" value={progress.todayAnswered ?? 0} />
-        <StatPill label="정답률" value={`${getAccuracy(progress)}%`} />
-      </div>
-
-      <div className="rounded-3xl bg-white p-3 shadow-sm ring-1 ring-orange-100">
+      <div className="rounded-[2rem] border border-[#E7E7F2] bg-white p-5 shadow-sm">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h3 className="text-base font-black">오늘의 25분 루틴</h3>
-            <p className="mt-1 text-xs font-bold text-slate-500">보조 루틴입니다. 문제은행을 먼저 풀어도 됩니다.</p>
-          </div>
-          <button type="button" onClick={completeToday} className="shrink-0 rounded-2xl bg-slate-950 px-3 py-2 text-xs font-black text-white">완료</button>
-        </div>
-        <div className="mt-3 grid gap-2">
-          {cramBlocks.map((block) => <p key={block} className="rounded-2xl bg-rose-50 p-2 text-xs font-black text-rose-950">{block}</p>)}
-        </div>
-      </div>
-
-      <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-orange-500">30일 플랜</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#6C63FF]">30일 플랜</p>
             <h3 className="mt-2 text-lg font-black text-black">Day {currentDay} · {todayPlan.phase}</h3>
             <p className="mt-1 text-sm font-bold text-stone-500">{todayPlan.focus}</p>
           </div>
@@ -1364,18 +1403,24 @@ function Today({ progress, setProgress, setTab }: { progress: Progress; setProgr
         </div>
       </div>
 
-      <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
+      <div className="grid grid-cols-3 gap-3">
+        <StatPill label="연속" value={`${progress.streak}일`} />
+        <StatPill label="오늘" value={progress.todayAnswered ?? 0} />
+        <StatPill label="정답률" value={`${getAccuracy(progress)}%`} />
+      </div>
+
+      <div className="rounded-[2rem] border border-[#E7E7F2] bg-white p-5 shadow-sm">
         <button type="button" onClick={() => setShowPlan((value) => !value)} className="flex w-full items-center justify-between text-left">
           <span>
             <span className="block text-lg font-black">학습 플랜 보기</span>
-            <span className="text-xs font-bold text-slate-500">30일 계획은 필요할 때만 펼쳐 확인합니다.</span>
+            <span className="text-xs font-bold text-stone-500">30일 계획은 필요할 때만 펼쳐 확인합니다.</span>
           </span>
-          <span className="rounded-full bg-orange-100 px-3 py-1 text-sm font-black text-orange-700">{showPlan ? "접기" : "펼치기"}</span>
+          <span className="rounded-full bg-[#F0EFFF] px-3 py-1 text-sm font-black text-[#6C63FF]">{showPlan ? "접기" : "펼치기"}</span>
         </button>
         {showPlan && (
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {plan.map((day) => (
-              <div key={day.day} className={`rounded-2xl border p-3 ${progress.completedDays.includes(day.day) ? "border-emerald-300 bg-emerald-50" : day.day === currentDay ? "border-orange-400 bg-orange-50" : "border-slate-200 bg-slate-50"}`}>
+              <div key={day.day} className={`rounded-2xl border p-3 ${progress.completedDays.includes(day.day) ? "border-emerald-300 bg-emerald-50" : day.day === currentDay ? "border-orange-200 bg-[#FFF4E1]" : "border-[#E7E7F2] bg-stone-50"}`}>
                 <p className="text-xs font-black text-slate-500">Day {day.day} · {day.phase}</p>
                 <p className="font-black text-slate-900">{day.focus}</p>
               </div>
@@ -1415,7 +1460,7 @@ function WrongNotebook({ progress, setProgress, onAudioBlocked }: { progress: Pr
         </div>
       </div>
       {progress.wrong.length === 0 ? <p className="rounded-3xl bg-white p-6 text-center font-bold text-slate-500">아직 오답이 없습니다. 문제은행을 풀면 자동 저장됩니다.</p> : progress.wrong.map((entry) => (
-        <div key={entry.id} className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-rose-100">
+        <div key={entry.id} className="rounded-3xl bg-white p-4 shadow-[0_8px_24px_rgba(17,24,39,0.04)] ring-1 ring-rose-100">
           <p className="text-xs font-black uppercase text-rose-500">{entry.kind} · {new Date(entry.at).toLocaleDateString("ko-KR")}</p>
           <h3 className="mt-1 font-black text-slate-950">{entry.title}</h3>
           <p className="mt-2 text-sm font-bold text-slate-600">내 답: <span className="text-rose-700">{entry.chosen}</span></p>
@@ -1440,38 +1485,51 @@ function Dashboard({ progress }: { progress: Progress }) {
 
   return (
     <section className="space-y-4">
-      <div className="rounded-[2rem] bg-gradient-to-br from-slate-950 to-slate-700 p-5 text-white shadow-xl">
-        <p className="text-sm font-black text-orange-200">문제은행 학습 대시보드</p>
-        <h2 className="mt-2 text-5xl font-black">Lv.{level}</h2>
-        <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/15"><div className="h-full rounded-full bg-orange-300" style={{ width: `${levelProgress}%` }} /></div>
-        <p className="mt-3 text-sm font-bold leading-6 text-slate-200">다음 레벨까지 {Math.max(0, nextLevelXp - progress.xp)} XP · 예상 합격 가능성 {passProbability}%</p>
+      <div className="rounded-[2rem] border border-[#E7E7F2] bg-white p-6 shadow-sm">
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#6C63FF]">기록</p>
+        <div className="mt-3 flex items-end justify-between gap-4">
+          <h2 className="text-5xl font-black text-black">Lv.{level}</h2>
+          <p className="rounded-full bg-[#F0EFFF] px-3 py-2 text-xs font-black text-black">합격 {passProbability}%</p>
+        </div>
+        <div className="mt-5 h-3 overflow-hidden rounded-full bg-[#F8F8FC]"><div className="h-full rounded-full bg-[#FFB84D]" style={{ width: `${levelProgress}%` }} /></div>
+        <p className="mt-3 text-sm font-bold leading-6 text-stone-500">다음 레벨까지 {Math.max(0, nextLevelXp - progress.xp)} XP</p>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <StatPill label="오늘 푼 문제" value={progress.todayAnswered ?? 0} />
-        <StatPill label="누적 문제" value={progress.totalAnswered ?? 0} />
+      <div className="grid grid-cols-2 gap-3">
+        <StatPill label="학습 시간" value={`${studyMinutes}분`} />
+        <StatPill label="푼 문제" value={progress.totalAnswered ?? 0} />
         <StatPill label="정답률" value={`${getAccuracy(progress)}%`} />
-        <StatPill label="총 학습" value={`${studyMinutes}분`} />
         <StatPill label="오늘 복습" value={`${dueToday}개`} />
-        <StatPill label="마스터" value={mastered} />
       </div>
-      <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
+      <div className="rounded-[2rem] border border-[#E7E7F2] bg-white p-5 shadow-sm">
+        <h3 className="text-lg font-black text-black">주간 학습</h3>
+        <div className="mt-4 flex h-24 items-end gap-2">
+          {[20, 45, 28, 70, 52, 88, Math.max(12, Math.min(100, progress.todayAnswered * 12))].map((height, index) => (
+            <div key={index} className="flex flex-1 flex-col items-center gap-2">
+              <div className="w-full rounded-t-2xl bg-[#6C63FF]" style={{ height: `${height}%` }} />
+              <span className="text-[10px] font-black text-stone-400">{index + 1}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-[2rem] border border-[#E7E7F2] bg-white p-5 shadow-sm">
         <h3 className="text-lg font-black">약점 유형 분석: {weakness}</h3>
         <div className="mt-3 grid gap-2">
           {Object.entries(progress.statsByKind ?? defaultProgress.statsByKind).filter(([kind]) => ["vocab", "grammar", "reading", "listening"].includes(kind)).map(([kind, stats]) => (
             <div key={kind} className="rounded-2xl bg-slate-50 p-3">
               <div className="flex justify-between text-sm font-black"><span>{kind}</span><span>{stats.answered ? Math.round((stats.correct / stats.answered) * 100) : 0}%</span></div>
-              <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200"><div className="h-full bg-orange-500" style={{ width: `${stats.answered ? Math.round((stats.correct / stats.answered) * 100) : 0}%` }} /></div>
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200"><div className="h-full bg-[#FFB84D]" style={{ width: `${stats.answered ? Math.round((stats.correct / stats.answered) * 100) : 0}%` }} /></div>
             </div>
           ))}
         </div>
       </div>
-      <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
+      <div className="rounded-[2rem] border border-[#E7E7F2] bg-white p-5 shadow-sm">
         <h3 className="text-lg font-black">한국어 화자 우선순위</h3>
         <ul className="mt-3 space-y-2 text-sm font-bold leading-6 text-slate-700">
-          <li className="rounded-2xl bg-orange-50 p-3">1. のに, そうだ처럼 한국어 번역이 같아도 감정·근거가 다른 문법을 먼저 잡기</li>
-          <li className="rounded-2xl bg-orange-50 p-3">2. 한자어는 의미 추측 후 예문 음성으로 실제 발음 고정하기</li>
-          <li className="rounded-2xl bg-orange-50 p-3">3. 독해는 조사보다 시간·장소·요청 동사를 표시하며 풀기</li>
-          <li className="rounded-2xl bg-orange-50 p-3">4. 청해는 숫자+단위, 목적지, 부탁 표현을 받아쓰기처럼 반복하기</li>
+          <li className="rounded-2xl bg-[#FFF4E1] p-3">1. のに, そうだ처럼 한국어 번역이 같아도 감정·근거가 다른 문법을 먼저 잡기</li>
+          <li className="rounded-2xl bg-[#FFF4E1] p-3">2. 한자어는 의미 추측 후 예문 음성으로 실제 발음 고정하기</li>
+          <li className="rounded-2xl bg-[#FFF4E1] p-3">3. 독해는 조사보다 시간·장소·요청 동사를 표시하며 풀기</li>
+          <li className="rounded-2xl bg-[#FFF4E1] p-3">4. 청해는 숫자+단위, 목적지, 부탁 표현을 받아쓰기처럼 반복하기</li>
         </ul>
       </div>
     </section>
