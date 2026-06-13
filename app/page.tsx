@@ -807,13 +807,13 @@ const cramBlocks = ["아침 7분: 음성 듣고 따라 읽기", "점심 8분: �
 
 const nav: { id: Tab; label: string; icon: string }[] = [
   { id: "today", label: "홈", icon: "🔥" },
-  { id: "free", label: "무", icon: "∞" },
-  { id: "vocab", label: "단", icon: "🧠" },
-  { id: "grammar", label: "문", icon: "🔗" },
-  { id: "reading", label: "독", icon: "📖" },
-  { id: "mock", label: "모", icon: "⏱" },
-  { id: "wrong", label: "오", icon: "📝" },
-  { id: "dashboard", label: "현", icon: "📊" },
+  { id: "free", label: "문제", icon: "∞" },
+  { id: "vocab", label: "어휘", icon: "🧠" },
+  { id: "grammar", label: "문법", icon: "🔗" },
+  { id: "reading", label: "독해", icon: "📖" },
+  { id: "listening", label: "청해", icon: "🎧" },
+  { id: "wrong", label: "오답", icon: "📝" },
+  { id: "dashboard", label: "기록", icon: "📊" },
 ];
 
 function useProgress() {
@@ -881,13 +881,12 @@ function ExampleCard({ example, compact = false, furiganaMode = "exam", revealed
         <button
           type="button"
           onClick={() => speakJapanese(example.jp, onAudioBlocked)}
-          className="shrink-0 rounded-full bg-rose-600 px-3 py-2 text-sm font-black text-white shadow-lg shadow-rose-200 active:scale-95"
+          className="shrink-0 rounded-full bg-orange-500 px-3 py-2 text-sm font-black text-white shadow-lg shadow-orange-200 active:scale-95"
           aria-label="일본어 음성 듣기"
         >
           🔊
         </button>
       </div>
-      <p className="mt-3 rounded-2xl bg-orange-50 p-3 text-sm font-bold text-orange-950">🇰🇷 {example.ko}</p>
     </div>
   );
 }
@@ -970,7 +969,7 @@ function Trainer({ title, items, progress, setProgress, onAudioBlocked }: { titl
         <p className="mt-1 text-sm text-slate-300">{item.focus}</p>
         <div className="mt-3 flex gap-2 text-xs font-bold">
           <span className="rounded-full bg-white/10 px-3 py-1">SRS: {srs?.level ?? "new"}</span>
-          <span className="rounded-full bg-white/10 px-3 py-1">Due: {srs?.due ?? "오늘"}</span>
+          <span className="rounded-full bg-white/10 px-3 py-1">오늘 {progress.todayAnswered ?? 0}문제</span>
         </div>
       </div>
 
@@ -995,7 +994,7 @@ function Trainer({ title, items, progress, setProgress, onAudioBlocked }: { titl
           })}
         </div>
         {!revealed && (
-          <button type="button" disabled={!pendingChoice} onClick={confirmAnswer} className="mt-3 w-full rounded-2xl bg-slate-950 py-3 font-black text-white disabled:bg-slate-300">
+          <button type="button" disabled={!pendingChoice} onClick={confirmAnswer} className="mt-3 w-full rounded-2xl bg-orange-500 py-3 font-black text-white shadow-lg shadow-orange-100 disabled:bg-slate-300 disabled:shadow-none">
             정답 확인
           </button>
         )}
@@ -1004,6 +1003,8 @@ function Trainer({ title, items, progress, setProgress, onAudioBlocked }: { titl
       {revealed && (
         <div className="rounded-3xl border border-orange-100 bg-white p-4 shadow-sm">
           <p className={`text-lg font-black ${correct ? "text-emerald-700" : "text-rose-700"}`}>{correct ? "정답! 바로 다음 복습 간격이 늘어났어요." : `오답: 정답은 ${item.answer}`}</p>
+          <p className="mt-3 rounded-2xl bg-orange-50 p-3 text-sm font-bold leading-6 text-orange-950">🇰🇷 해석: {item.ko}</p>
+          <p className="mt-2 rounded-2xl bg-slate-50 p-3 text-xs font-bold leading-5 text-slate-600">요미가나: {item.furigana}</p>
           <p className="mt-3 text-sm font-bold leading-6 text-slate-700">💡 한국어식 감각: {item.koreanHint}</p>
           <p className="mt-2 text-sm font-bold leading-6 text-rose-800">⚠️ 자주 헷갈림: {item.pitfall}</p>
           <button type="button" onClick={() => { setPendingChoice(null); setRevealed(false); setIndex((value) => value + 1); }} className="mt-4 w-full rounded-2xl bg-slate-950 py-3 font-black text-white">
@@ -1075,13 +1076,15 @@ function Diagnostic({ progress, setProgress, onAudioBlocked }: { progress: Progr
               })}
             </div>
             {!selected && (
-              <button type="button" disabled={!pending} onClick={() => confirmQuestion(question)} className="mt-3 w-full rounded-2xl bg-slate-950 py-3 font-black text-white disabled:bg-slate-300">
+              <button type="button" disabled={!pending} onClick={() => confirmQuestion(question)} className="mt-3 w-full rounded-2xl bg-orange-500 py-3 font-black text-white shadow-lg shadow-orange-100 disabled:bg-slate-300 disabled:shadow-none">
                 정답 확인
               </button>
             )}
             {selected && (
               <div className="mt-3 rounded-2xl bg-slate-50 p-3">
                 <p className={`font-black ${selected === question.answer ? "text-emerald-700" : "text-rose-700"}`}>{selected === question.answer ? "정답입니다." : `오답입니다. 정답: ${question.answer}`}</p>
+                <p className="mt-3 rounded-2xl bg-orange-50 p-3 text-sm font-bold leading-6 text-orange-950">🇰🇷 해석: {question.example.ko}</p>
+                <p className="mt-2 rounded-2xl bg-slate-100 p-3 text-xs font-bold leading-5 text-slate-600">요미가나: {question.example.furigana}</p>
                 <p className="mt-2 text-sm font-bold leading-6 text-slate-700">{question.explanation}</p>
               </div>
             )}
@@ -1169,7 +1172,7 @@ function BankMode({ title, pool, progress, setProgress, mode = "adaptive", onAud
             <p className="text-xs font-black uppercase text-orange-600">{item.kind} · {item.focus}</p>
             <h3 className="mt-1 text-2xl font-black text-slate-950">{item.title}</h3>
           </div>
-          <button type="button" onClick={() => speakJapanese(item.title, onAudioBlocked)} className="rounded-full bg-rose-600 px-3 py-2 text-xs font-black text-white">🔊 발음</button>
+          <button type="button" onClick={() => speakJapanese(item.title, onAudioBlocked)} className="rounded-full bg-orange-500 px-3 py-2 text-xs font-black text-white shadow-sm shadow-orange-100">🔊 발음</button>
         </div>
       </div>
 
@@ -1189,12 +1192,14 @@ function BankMode({ title, pool, progress, setProgress, mode = "adaptive", onAud
             return <button key={`${choice}-${choiceIndex}`} type="button" disabled={revealed} onClick={() => setPendingChoice(choice)} className={`rounded-2xl border-2 p-4 text-left font-black disabled:opacity-100 ${state}`}>{choice}</button>;
           })}
         </div>
-        {!revealed ? <button type="button" disabled={!pendingChoice} onClick={confirm} className="mt-3 w-full rounded-2xl bg-slate-950 py-3 font-black text-white disabled:bg-slate-300">정답 확인</button> : null}
+        {!revealed ? <button type="button" disabled={!pendingChoice} onClick={confirm} className="mt-3 w-full rounded-2xl bg-orange-500 py-3 font-black text-white shadow-lg shadow-orange-100 disabled:bg-slate-300 disabled:shadow-none">정답 확인</button> : null}
       </div>
 
       {revealed && (
         <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
           <p className={`text-lg font-black ${correct ? "text-emerald-700" : "text-rose-700"}`}>{correct ? "+12 XP 정답" : `+6 XP 오답 · 정답은 ${item.answer}`}</p>
+          <p className="mt-3 rounded-2xl bg-orange-50 p-3 text-sm font-bold leading-6 text-orange-950">🇰🇷 해석: {item.ko}</p>
+          <p className="mt-2 rounded-2xl bg-slate-50 p-3 text-xs font-bold leading-5 text-slate-600">요미가나: {item.furigana}</p>
           <p className="mt-3 text-sm font-bold leading-6 text-slate-700">💡 {item.koreanHint}</p>
           <p className="mt-2 text-sm font-bold leading-6 text-rose-800">⚠️ {item.pitfall}</p>
           <button type="button" onClick={next} className="mt-4 w-full rounded-2xl bg-orange-500 py-3 font-black text-white">계속 풀기</button>
@@ -1245,11 +1250,11 @@ function Today({ progress, setProgress, setTab }: { progress: Progress; setProgr
   };
 
   const primaryActions: { label: string; helper: string; tab: Tab; style: string }[] = [
-    { label: "무한 문제풀이", helper: "자동 난이도", tab: "free", style: "bg-gradient-to-br from-orange-500 to-rose-600 text-white shadow-orange-200" },
+    { label: "무한 문제풀이", helper: "자동 난이도", tab: "free", style: "bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-orange-200" },
     { label: "랜덤 어휘", helper: "N3 단어 1000+", tab: "vocab", style: "bg-slate-950 text-white shadow-slate-300" },
     { label: "랜덤 문법", helper: "한국인 약점 우선", tab: "grammar", style: "bg-indigo-600 text-white shadow-indigo-200" },
     { label: "랜덤 독해", helper: "난이도 자동 조절", tab: "reading", style: "bg-emerald-600 text-white shadow-emerald-200" },
-    { label: "오답 복습", helper: `${progress.wrong.length}개 재시험`, tab: "wrong", style: "bg-white text-rose-700 ring-1 ring-rose-100 shadow-rose-100" },
+    { label: "오답 복습", helper: progress.wrong.length === 0 ? "아직 오답 없음" : `${progress.wrong.length}개 재시험`, tab: "wrong", style: "bg-gradient-to-br from-slate-950 to-orange-600 text-white shadow-orange-200" },
   ];
 
   return (
@@ -1262,7 +1267,7 @@ function Today({ progress, setProgress, setTab }: { progress: Progress; setProgr
 
       <div className="grid grid-cols-2 gap-2">
         {primaryActions.map((action, index) => (
-          <button key={action.tab} type="button" onClick={() => setTab(action.tab)} className={`rounded-3xl p-4 text-left shadow-lg active:scale-[0.99] ${action.style} ${index === 0 ? "col-span-2" : ""}`}>
+          <button key={action.tab} type="button" onClick={() => setTab(action.tab)} className={`rounded-3xl p-4 text-left shadow-lg active:scale-[0.99] ${action.style} ${index === 0 || action.tab === "wrong" ? "col-span-2" : ""}`}>
             <span className="block text-lg font-black">{action.label}</span>
             <span className="mt-1 block text-xs font-bold opacity-80">{action.helper}</span>
           </button>
@@ -1419,7 +1424,7 @@ export default function Home() {
   const [progress, setProgress] = useProgress();
   const [audioWarning, setAudioWarning] = useState(false);
   const [isKakaoBrowser, setIsKakaoBrowser] = useState(false);
-  const dueItems = useMemo(() => allItems.filter((item) => !progress.srs[item.id] || progress.srs[item.id].due <= todayIso()), [progress.srs]);
+  const currentDay = Math.min(30, Math.max(1, Math.floor((Date.now() - new Date(progress.startedAt).getTime()) / 86400000) + 1));
   const handleAudioBlocked = () => setAudioWarning(true);
 
   useEffect(() => {
@@ -1455,11 +1460,11 @@ export default function Home() {
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.24em] text-orange-600">JLPT N3 · 30일 크램</p>
-            <h1 className="mt-1 text-2xl font-black text-slate-950">한국어 화자 전용 합격 트레이너</h1>
+            <h1 className="mt-1 text-xl font-black leading-tight text-slate-950 sm:text-2xl">JLPT N3 합격 트레이너</h1>
           </div>
           <div className="rounded-2xl bg-orange-100 px-3 py-2 text-center">
-            <p className="text-xs font-black text-orange-700">Due</p>
-            <p className="text-xl font-black text-orange-950">{dueItems.length}</p>
+            <p className="text-xs font-black text-orange-700">Day</p>
+            <p className="text-xl font-black text-orange-950">{currentDay}/30</p>
           </div>
         </div>
         <div className="mt-3 grid grid-cols-2 gap-2">
@@ -1479,7 +1484,7 @@ export default function Home() {
       <nav aria-label="JLPT N3 주요 학습 메뉴" className="safe-bottom fixed inset-x-0 bottom-0 z-20 border-t border-orange-100 bg-white/95 px-2 pt-1 shadow-[0_-12px_40px_rgba(15,23,42,0.10)] backdrop-blur lg:hidden">
         <div className="mx-auto grid max-w-3xl grid-cols-8 gap-0.5">
           {nav.map((item) => (
-            <button key={item.id} type="button" onClick={() => setTab(item.id)} className={`rounded-xl px-1 py-1 text-[10px] font-black leading-none ${tab === item.id ? "bg-slate-950 text-white" : "text-slate-600"}`}>
+            <button key={item.id} type="button" onClick={() => setTab(item.id)} className={`rounded-xl px-0.5 py-1 text-[10px] font-black leading-none ${tab === item.id ? "bg-slate-950 text-white" : "text-slate-600"}`}>
               <span className="block text-sm leading-none">{item.icon}</span><span className="mt-0.5 block">{item.label}</span>
             </button>
           ))}
