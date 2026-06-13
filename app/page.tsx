@@ -1570,27 +1570,27 @@ export default function Home() {
     : <Dashboard progress={progress} />;
 
   return (
-    <main className={`mx-auto min-h-screen w-full max-w-3xl px-4 pb-[calc(220px+env(safe-area-inset-bottom))] pt-5 sm:px-6 lg:pb-[180px] ${progress.darkMode ? "bg-slate-950 text-slate-100" : ""}`}>
+    <main className={`mx-auto min-h-screen w-full max-w-3xl px-4 pb-[calc(220px+env(safe-area-inset-bottom))] pt-4 sm:px-6 lg:pb-[180px] ${progress.darkMode ? "bg-slate-950 text-slate-100" : ""}`}>
       {isKakaoBrowser && <div className="mb-3 rounded-2xl bg-yellow-100 p-3 text-xs font-black text-yellow-900 ring-1 ring-yellow-200">카카오톡 브라우저에서 음성이 안 나오면 Chrome/Safari로 열어주세요.</div>}
       {audioWarning && <button type="button" onClick={() => setAudioWarning(false)} className="mb-3 w-full rounded-2xl bg-rose-100 p-3 text-left text-xs font-black text-rose-900 ring-1 ring-rose-200">브라우저에서 음성 재생이 막혔어요. 크롬 또는 사파리에서 열어주세요. (닫기)</button>}
-      <header className="mb-5 rounded-[2rem] border border-[#E7E7F2] bg-white p-4 shadow-[0_8px_24px_rgba(17,24,39,0.04)]">
+      <header className="mb-4 rounded-[2rem] border border-white/80 bg-white/75 p-4 shadow-sm backdrop-blur">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.24em] text-[#6C63FF]">JLPT N3 · 30일 크램</p>
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-orange-600">JLPT N3 · 30일 크램</p>
             <h1 className="mt-1 text-xl font-black leading-tight text-slate-950 sm:text-2xl">JLPT N3 합격 트레이너</h1>
           </div>
-          <div className="rounded-2xl bg-[#F0EFFF] px-3 py-2 text-center">
-            <p className="text-xs font-black text-[#6B7280]">Day</p>
-            <p className="text-xl font-black text-black">{currentDay}/30</p>
+          <div className="rounded-2xl bg-orange-100 px-3 py-2 text-center">
+            <p className="text-xs font-black text-orange-700">Day</p>
+            <p className="text-xl font-black text-orange-950">{currentDay}/30</p>
           </div>
         </div>
         <div className="mt-3 grid grid-cols-2 gap-2">
-          <select value={progress.furiganaMode} onChange={(event) => setProgress((prev) => ({ ...prev, furiganaMode: event.target.value as FuriganaMode }))} className="rounded-2xl bg-[#F8F8FC] px-3 py-2 text-xs font-black text-stone-700">
+          <select value={progress.furiganaMode} onChange={(event) => setProgress((prev) => ({ ...prev, furiganaMode: event.target.value as FuriganaMode }))} className="rounded-2xl bg-slate-100 px-3 py-2 text-xs font-black text-slate-700">
             <option value="exam">요미가나 시험모드</option>
             <option value="learning">요미가나 학습모드</option>
             <option value="hidden">요미가나 숨김모드</option>
           </select>
-          <button type="button" onClick={() => setProgress((prev) => ({ ...prev, darkMode: !prev.darkMode }))} className="rounded-2xl bg-[#F8F8FC] px-3 py-2 text-xs font-black text-stone-700">다크모드 {progress.darkMode ? "ON" : "OFF"}</button>
+          <button type="button" onClick={() => setProgress((prev) => ({ ...prev, darkMode: !prev.darkMode }))} className="rounded-2xl bg-slate-100 px-3 py-2 text-xs font-black text-slate-700">다크모드 {progress.darkMode ? "ON" : "OFF"}</button>
         </div>
       </header>
 
@@ -1598,12 +1598,20 @@ export default function Home() {
 
       <div className="bottom-nav-spacer lg:hidden" aria-hidden="true" />
 
-      <TabBar tab={tab} setTab={setTab} />
+      <nav aria-label="JLPT N3 주요 학습 메뉴" className="safe-bottom fixed inset-x-0 bottom-0 z-20 border-t border-orange-100 bg-white/95 px-2 pt-1 shadow-[0_-12px_40px_rgba(15,23,42,0.10)] backdrop-blur lg:hidden">
+        <div className="mx-auto grid max-w-3xl grid-cols-8 gap-0.5">
+          {nav.map((item) => (
+            <button key={item.id} type="button" onClick={() => setTab(item.id)} className={`rounded-xl px-0.5 py-1 text-[10px] font-black leading-none ${tab === item.id ? "bg-slate-950 text-white" : "text-slate-600"}`}>
+              <span className="block text-sm leading-none">{item.icon}</span><span className="mt-0.5 block">{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
 
       <aside className="fixed right-6 top-6 hidden w-48 rounded-[2rem] bg-white/90 p-3 shadow-xl ring-1 ring-orange-100 backdrop-blur lg:block">
         <p className="px-2 text-xs font-black text-slate-500">메뉴</p>
         <div className="mt-2 grid gap-1">
-          {nav.map((item) => <button key={item.id} type="button" onClick={() => setTab(item.id)} className={`rounded-2xl px-3 py-2 text-left text-sm font-black ${tab === item.id ? "bg-black text-white" : "text-stone-700 hover:bg-[#F0EFFF]"}`}>{item.icon} {item.label}</button>)}
+          {nav.map((item) => <button key={item.id} type="button" onClick={() => setTab(item.id)} className={`rounded-2xl px-3 py-2 text-left text-sm font-black ${tab === item.id ? "bg-black text-white" : "text-stone-700 hover:bg-lime-50"}`}>{item.icon} {item.label}</button>)}
         </div>
       </aside>
     </main>
