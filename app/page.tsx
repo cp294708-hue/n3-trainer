@@ -932,7 +932,7 @@ function ExampleCard({ example, compact = false, furiganaMode = "exam", revealed
         <button
           type="button"
           onClick={() => speakJapanese(example.jp, onAudioBlocked)}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-lime-200 text-sm font-black text-black shadow-sm active:scale-95"
+          className="shrink-0 rounded-full bg-orange-500 px-3 py-2 text-sm font-black text-white shadow-lg shadow-orange-200 active:scale-95"
           aria-label="일본어 음성 듣기"
         >
           🔊
@@ -1036,7 +1036,7 @@ function Trainer({ title, items, progress, setProgress, onAudioBlocked }: { titl
                 ? "border-rose-500 bg-rose-50 text-rose-950"
                 : pendingChoice === choice
                   ? "border-blue-500 bg-blue-50 text-blue-950"
-                  : "border-black/5 bg-white text-black shadow-sm";
+                  : "border-slate-200 bg-white text-slate-800";
             return (
               <button key={`${choice}-${choiceIndex}`} type="button" disabled={revealed} onClick={() => setPendingChoice(choice)} className={`rounded-2xl border-2 p-4 text-left font-black shadow-sm active:scale-[0.99] disabled:opacity-100 ${state}`}>
                 {choice}
@@ -1045,7 +1045,7 @@ function Trainer({ title, items, progress, setProgress, onAudioBlocked }: { titl
           })}
         </div>
         {!revealed && (
-          <button type="button" disabled={!pendingChoice} onClick={confirmAnswer} className="mt-4 w-full rounded-2xl bg-black py-3 font-black text-white shadow-sm disabled:bg-stone-200 disabled:text-stone-400">
+          <button type="button" disabled={!pendingChoice} onClick={confirmAnswer} className="mt-3 w-full rounded-2xl bg-orange-500 py-3 font-black text-white shadow-lg shadow-orange-100 disabled:bg-slate-300 disabled:shadow-none">
             정답 확인
           </button>
         )}
@@ -1054,8 +1054,8 @@ function Trainer({ title, items, progress, setProgress, onAudioBlocked }: { titl
       {revealed && (
         <div className="rounded-3xl border border-orange-100 bg-white p-4 shadow-sm">
           <p className={`text-lg font-black ${correct ? "text-emerald-700" : "text-rose-700"}`}>{correct ? "정답! 바로 다음 복습 간격이 늘어났어요." : `오답: 정답은 ${item.answer}`}</p>
-          <p className="mt-3 rounded-2xl bg-orange-50 p-4 text-sm font-bold leading-6 text-black">🇰🇷 해석: {item.ko}</p>
-          <p className="mt-2 rounded-2xl bg-stone-100 p-4 text-xs font-bold leading-5 text-stone-600">요미가나: {item.furigana}</p>
+          <p className="mt-3 rounded-2xl bg-orange-50 p-3 text-sm font-bold leading-6 text-orange-950">🇰🇷 해석: {item.ko}</p>
+          <p className="mt-2 rounded-2xl bg-slate-50 p-3 text-xs font-bold leading-5 text-slate-600">요미가나: {item.furigana}</p>
           <p className="mt-3 text-sm font-bold leading-6 text-slate-700">💡 한국어식 감각: {item.koreanHint}</p>
           <p className="mt-2 text-sm font-bold leading-6 text-rose-800">⚠️ 자주 헷갈림: {item.pitfall}</p>
           <button type="button" onClick={() => { setPendingChoice(null); setRevealed(false); setIndex((value) => value + 1); }} className="mt-4 w-full rounded-2xl bg-slate-950 py-3 font-black text-white">
@@ -1127,14 +1127,14 @@ function Diagnostic({ progress, setProgress, onAudioBlocked }: { progress: Progr
               })}
             </div>
             {!selected && (
-              <button type="button" disabled={!pending} onClick={() => confirmQuestion(question)} className="mt-4 w-full rounded-2xl bg-black py-3 font-black text-white shadow-sm disabled:bg-stone-200 disabled:text-stone-400">
+              <button type="button" disabled={!pending} onClick={() => confirmQuestion(question)} className="mt-3 w-full rounded-2xl bg-orange-500 py-3 font-black text-white shadow-lg shadow-orange-100 disabled:bg-slate-300 disabled:shadow-none">
                 정답 확인
               </button>
             )}
             {selected && (
               <div className="mt-3 rounded-2xl bg-slate-50 p-3">
                 <p className={`font-black ${selected === question.answer ? "text-emerald-700" : "text-rose-700"}`}>{selected === question.answer ? "정답입니다." : `오답입니다. 정답: ${question.answer}`}</p>
-                <p className="mt-3 rounded-2xl bg-orange-50 p-4 text-sm font-bold leading-6 text-black">🇰🇷 해석: {question.example.ko}</p>
+                <p className="mt-3 rounded-2xl bg-orange-50 p-3 text-sm font-bold leading-6 text-orange-950">🇰🇷 해석: {question.example.ko}</p>
                 <p className="mt-2 rounded-2xl bg-slate-100 p-3 text-xs font-bold leading-5 text-slate-600">요미가나: {question.example.furigana}</p>
                 <p className="mt-2 text-sm font-bold leading-6 text-slate-700">{question.explanation}</p>
               </div>
@@ -1216,29 +1216,29 @@ function BankMode({ title, pool, progress, setProgress, mode = "adaptive", onAud
 
   return (
     <section className="space-y-4">
-      <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-orange-500">{mode === "wrong" ? "오답 재시험" : mode === "mock" ? "미니 모의" : "문제은행"}</p>
-        <h2 className="mt-2 text-2xl font-black text-black">{title}</h2>
-        <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs font-black text-black">
-          <span className="rounded-2xl bg-lime-100 p-2">오늘 {progress.todayAnswered ?? 0}</span>
-          <span className="rounded-2xl bg-stone-100 p-2">누적 {progress.totalAnswered ?? 0}</span>
-          <span className="rounded-2xl bg-orange-100 p-2">정답률 {accuracy}%</span>
+      <div className="rounded-[2rem] bg-gradient-to-br from-slate-950 to-orange-700 p-5 text-white shadow-xl">
+        <p className="text-sm font-black text-orange-100">무제한 문제은행 · {mode === "wrong" ? "오답 재시험" : mode === "mock" ? "모의고사" : "자동 난이도"}</p>
+        <h2 className="mt-1 text-2xl font-black">{title}</h2>
+        <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs font-black">
+          <span className="rounded-2xl bg-white/10 p-2">오늘 {progress.todayAnswered ?? 0}문제</span>
+          <span className="rounded-2xl bg-white/10 p-2">누적 {progress.totalAnswered ?? 0}문제</span>
+          <span className="rounded-2xl bg-white/10 p-2">정답률 {accuracy}%</span>
         </div>
       </div>
 
-      <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
+      <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
         <div className="flex items-center justify-between gap-2">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-orange-500">{item.kind} · {item.focus}</p>
+            <p className="text-xs font-black uppercase text-orange-600">{item.kind} · {item.focus}</p>
             <h3 className="mt-1 text-2xl font-black text-slate-950">{item.title}</h3>
           </div>
-          <button type="button" onClick={() => speakJapanese(item.title, onAudioBlocked)} className="grid h-10 w-10 place-items-center rounded-full bg-lime-200 text-xs font-black text-black shadow-sm">🔊</button>
+          <button type="button" onClick={() => speakJapanese(item.title, onAudioBlocked)} className="rounded-full bg-orange-500 px-3 py-2 text-xs font-black text-white shadow-sm shadow-orange-100">🔊 발음</button>
         </div>
       </div>
 
       <ExampleCard example={item} furiganaMode={progress.furiganaMode} revealed={revealed} answerTerm={item.kind === "vocab" ? item.title : undefined} onAudioBlocked={onAudioBlocked} />
 
-      <div className="rounded-[2rem] border border-black/5 bg-white p-4 shadow-sm">
+      <div className="rounded-3xl bg-white/90 p-3 shadow-sm ring-1 ring-orange-100">
         <p className="px-1 pb-2 text-xs font-black text-slate-500">정답은 선택 전 절대 표시되지 않습니다. 답을 고른 뒤 확인하세요.</p>
         <div className="grid gap-2">
           {choices.map((choice, choiceIndex) => {
@@ -1248,21 +1248,21 @@ function BankMode({ title, pool, progress, setProgress, mode = "adaptive", onAud
                 ? "border-rose-500 bg-rose-50 text-rose-950"
                 : pendingChoice === choice
                   ? "border-blue-500 bg-blue-50 text-blue-950"
-                  : "border-black/5 bg-white text-black shadow-sm";
+                  : "border-slate-200 bg-white text-slate-800";
             return <button key={`${choice}-${choiceIndex}`} type="button" disabled={revealed} onClick={() => setPendingChoice(choice)} className={`rounded-2xl border-2 p-4 text-left font-black disabled:opacity-100 ${state}`}>{choice}</button>;
           })}
         </div>
-        {!revealed ? <button type="button" disabled={!pendingChoice} onClick={confirm} className="mt-4 w-full rounded-2xl bg-black py-3 font-black text-white shadow-sm disabled:bg-stone-200 disabled:text-stone-400">정답 확인</button> : null}
+        {!revealed ? <button type="button" disabled={!pendingChoice} onClick={confirm} className="mt-3 w-full rounded-2xl bg-orange-500 py-3 font-black text-white shadow-lg shadow-orange-100 disabled:bg-slate-300 disabled:shadow-none">정답 확인</button> : null}
       </div>
 
       {revealed && (
-        <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
+        <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
           <p className={`text-lg font-black ${correct ? "text-emerald-700" : "text-rose-700"}`}>{correct ? "+12 XP 정답" : `+6 XP 오답 · 정답은 ${item.answer}`}</p>
-          <p className="mt-3 rounded-2xl bg-orange-50 p-4 text-sm font-bold leading-6 text-black">🇰🇷 해석: {item.ko}</p>
-          <p className="mt-2 rounded-2xl bg-stone-100 p-4 text-xs font-bold leading-5 text-stone-600">요미가나: {item.furigana}</p>
+          <p className="mt-3 rounded-2xl bg-orange-50 p-3 text-sm font-bold leading-6 text-orange-950">🇰🇷 해석: {item.ko}</p>
+          <p className="mt-2 rounded-2xl bg-slate-50 p-3 text-xs font-bold leading-5 text-slate-600">요미가나: {item.furigana}</p>
           <p className="mt-3 text-sm font-bold leading-6 text-slate-700">💡 {item.koreanHint}</p>
           <p className="mt-2 text-sm font-bold leading-6 text-rose-800">⚠️ {item.pitfall}</p>
-          <button type="button" onClick={next} className="mt-4 w-full rounded-2xl bg-black py-3 font-black text-white">계속 풀기</button>
+          <button type="button" onClick={next} className="mt-4 w-full rounded-2xl bg-orange-500 py-3 font-black text-white">계속 풀기</button>
         </div>
       )}
     </section>
@@ -1274,10 +1274,10 @@ function FreeStudy({ progress, setProgress, onAudioBlocked }: { progress: Progre
   const pool = scope === "all" ? allItems : allItems.filter((item) => item.kind === scope);
   return (
     <section className="space-y-4">
-      <div className="rounded-[2rem] border border-black/5 bg-white p-4 shadow-sm">
+      <div className="rounded-3xl bg-white p-3 shadow-sm ring-1 ring-orange-100">
         <p className="text-sm font-black text-slate-500">자유 학습 모드: 하루 제한 없이 수백 문제까지 계속 풉니다.</p>
         <div className="mt-3 grid grid-cols-5 gap-1">
-          {(["all", "vocab", "grammar", "reading", "listening"] as const).map((kind) => <button key={kind} onClick={() => setScope(kind)} className={`rounded-xl px-2 py-2 text-xs font-black ${scope === kind ? "bg-black text-white" : "bg-stone-100 text-stone-700"}`}>{kind === "all" ? "전체" : kind}</button>)}
+          {(["all", "vocab", "grammar", "reading", "listening"] as const).map((kind) => <button key={kind} onClick={() => setScope(kind)} className={`rounded-xl px-2 py-2 text-xs font-black ${scope === kind ? "bg-slate-950 text-white" : "bg-slate-100 text-slate-700"}`}>{kind === "all" ? "전체" : kind}</button>)}
         </div>
       </div>
       <BankMode key={scope} title={scope === "all" ? "랜덤 JLPT N3 문제" : `랜덤 ${scope} 문제`} pool={pool} progress={progress} setProgress={setProgress} onAudioBlocked={onAudioBlocked} />
@@ -1309,42 +1309,48 @@ function Today({ progress, setProgress, setTab }: { progress: Progress; setProgr
     });
   };
 
-  const primaryActions: { label: string; helper: string; tab: Tab; accent: string }[] = [
-    { label: "문제", helper: "추천 문제", tab: "free", accent: "bg-lime-100" },
-    { label: "어휘", helper: "N3 단어", tab: "vocab", accent: "bg-orange-100" },
-    { label: "문법", helper: "핵심 패턴", tab: "grammar", accent: "bg-violet-100" },
-    { label: "독해", helper: "지문 훈련", tab: "reading", accent: "bg-stone-100" },
-    { label: "청해", helper: "듣기 단서", tab: "listening", accent: "bg-lime-100" },
-    { label: "오답", helper: progress.wrong.length === 0 ? "아직 없음" : `${progress.wrong.length}개`, tab: "wrong", accent: "bg-orange-100" },
-    { label: "기록", helper: `${getAccuracy(progress)}% 정답률`, tab: "dashboard", accent: "bg-violet-100" },
+  const primaryActions: { label: string; helper: string; tab: Tab; style: string }[] = [
+    { label: "무한 문제풀이", helper: "자동 난이도", tab: "free", style: "bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-orange-200" },
+    { label: "랜덤 어휘", helper: "N3 단어 1000+", tab: "vocab", style: "bg-slate-950 text-white shadow-slate-300" },
+    { label: "랜덤 문법", helper: "한국인 약점 우선", tab: "grammar", style: "bg-indigo-600 text-white shadow-indigo-200" },
+    { label: "랜덤 독해", helper: "난이도 자동 조절", tab: "reading", style: "bg-emerald-600 text-white shadow-emerald-200" },
+    { label: "오답 복습", helper: progress.wrong.length === 0 ? "아직 오답 없음" : `${progress.wrong.length}개 재시험`, tab: "wrong", style: "bg-gradient-to-br from-slate-950 to-orange-600 text-white shadow-orange-200" },
   ];
 
   return (
-    <section className="space-y-5">
-      <div className="rounded-[2rem] border border-black/5 bg-white p-6 shadow-sm">
-        <p className="text-sm font-bold text-stone-500">Hi, 오늘도 N3 👋</p>
-        <h2 className="mt-2 text-3xl font-black leading-tight text-black">가볍게 한 세트만 풀어볼까요?</h2>
-        <p className="mt-3 text-sm font-bold leading-6 text-stone-500">Day {currentDay}/30 · 오늘 {progress.todayAnswered ?? 0}문제 · {progress.xp} XP</p>
+    <section className="space-y-4">
+      <div className="rounded-[2rem] bg-slate-950 p-4 text-white shadow-xl">
+        <p className="text-xs font-black text-orange-200">문제은행 홈 · Day {currentDay} 보조 플랜</p>
+        <h2 className="mt-1 text-2xl font-black">오늘도 제한 없이 계속 풀기</h2>
+        <p className="mt-2 text-xs font-bold leading-5 text-slate-200">30일 계획과 상관없이 원하는 만큼 문제를 풀고 XP를 누적하세요.</p>
       </div>
 
-      <button type="button" onClick={() => setTab("free")} className="w-full rounded-[2rem] bg-lime-200 p-5 text-left shadow-sm active:scale-[0.99]">
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-black/60">오늘 추천 학습</p>
-        <div className="mt-3 flex items-end justify-between gap-4">
-          <div>
-            <h3 className="text-2xl font-black text-black">문제은행 10분</h3>
-            <p className="mt-2 text-sm font-bold text-black/60">반복 없이 랜덤 문제를 이어서 풀어요.</p>
-          </div>
-          <span className="rounded-full bg-black px-4 py-2 text-sm font-black text-white">시작</span>
-        </div>
-      </button>
-
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         {primaryActions.map((action, index) => (
-          <button key={action.tab} type="button" onClick={() => setTab(action.tab)} className={`rounded-[1.75rem] border border-black/5 p-4 text-left shadow-sm active:scale-[0.99] ${action.accent} ${index === 0 ? "col-span-2" : ""}`}>
-            <span className="block text-xl font-black text-black">{action.label}</span>
-            <span className="mt-2 block text-xs font-bold text-black/55">{action.helper}</span>
+          <button key={action.tab} type="button" onClick={() => setTab(action.tab)} className={`rounded-3xl p-4 text-left shadow-lg active:scale-[0.99] ${action.style} ${index === 0 || action.tab === "wrong" ? "col-span-2" : ""}`}>
+            <span className="block text-lg font-black">{action.label}</span>
+            <span className="mt-1 block text-xs font-bold opacity-80">{action.helper}</span>
           </button>
         ))}
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        <StatPill label="연속" value={`${progress.streak}일`} />
+        <StatPill label="오늘" value={progress.todayAnswered ?? 0} />
+        <StatPill label="정답률" value={`${getAccuracy(progress)}%`} />
+      </div>
+
+      <div className="rounded-3xl bg-white p-3 shadow-sm ring-1 ring-orange-100">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h3 className="text-base font-black">오늘의 25분 루틴</h3>
+            <p className="mt-1 text-xs font-bold text-slate-500">보조 루틴입니다. 문제은행을 먼저 풀어도 됩니다.</p>
+          </div>
+          <button type="button" onClick={completeToday} className="shrink-0 rounded-2xl bg-slate-950 px-3 py-2 text-xs font-black text-white">완료</button>
+        </div>
+        <div className="mt-3 grid gap-2">
+          {cramBlocks.map((block) => <p key={block} className="rounded-2xl bg-rose-50 p-2 text-xs font-black text-rose-950">{block}</p>)}
+        </div>
       </div>
 
       <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
@@ -1358,24 +1364,18 @@ function Today({ progress, setProgress, setTab }: { progress: Progress; setProgr
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
-        <StatPill label="연속" value={`${progress.streak}일`} />
-        <StatPill label="오늘" value={progress.todayAnswered ?? 0} />
-        <StatPill label="정답률" value={`${getAccuracy(progress)}%`} />
-      </div>
-
-      <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
+      <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
         <button type="button" onClick={() => setShowPlan((value) => !value)} className="flex w-full items-center justify-between text-left">
           <span>
             <span className="block text-lg font-black">학습 플랜 보기</span>
-            <span className="text-xs font-bold text-stone-500">30일 계획은 필요할 때만 펼쳐 확인합니다.</span>
+            <span className="text-xs font-bold text-slate-500">30일 계획은 필요할 때만 펼쳐 확인합니다.</span>
           </span>
-          <span className="rounded-full bg-lime-100 px-3 py-1 text-sm font-black text-black/60">{showPlan ? "접기" : "펼치기"}</span>
+          <span className="rounded-full bg-orange-100 px-3 py-1 text-sm font-black text-orange-700">{showPlan ? "접기" : "펼치기"}</span>
         </button>
         {showPlan && (
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {plan.map((day) => (
-              <div key={day.day} className={`rounded-2xl border p-3 ${progress.completedDays.includes(day.day) ? "border-emerald-300 bg-emerald-50" : day.day === currentDay ? "border-orange-200 bg-orange-50" : "border-black/5 bg-stone-50"}`}>
+              <div key={day.day} className={`rounded-2xl border p-3 ${progress.completedDays.includes(day.day) ? "border-emerald-300 bg-emerald-50" : day.day === currentDay ? "border-orange-400 bg-orange-50" : "border-slate-200 bg-slate-50"}`}>
                 <p className="text-xs font-black text-slate-500">Day {day.day} · {day.phase}</p>
                 <p className="font-black text-slate-900">{day.focus}</p>
               </div>
@@ -1440,34 +1440,21 @@ function Dashboard({ progress }: { progress: Progress }) {
 
   return (
     <section className="space-y-4">
-      <div className="rounded-[2rem] border border-black/5 bg-white p-6 shadow-sm">
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-orange-500">기록</p>
-        <div className="mt-3 flex items-end justify-between gap-4">
-          <h2 className="text-5xl font-black text-black">Lv.{level}</h2>
-          <p className="rounded-full bg-lime-100 px-3 py-2 text-xs font-black text-black">합격 {passProbability}%</p>
-        </div>
-        <div className="mt-5 h-3 overflow-hidden rounded-full bg-stone-100"><div className="h-full rounded-full bg-orange-400" style={{ width: `${levelProgress}%` }} /></div>
-        <p className="mt-3 text-sm font-bold leading-6 text-stone-500">다음 레벨까지 {Math.max(0, nextLevelXp - progress.xp)} XP</p>
+      <div className="rounded-[2rem] bg-gradient-to-br from-slate-950 to-slate-700 p-5 text-white shadow-xl">
+        <p className="text-sm font-black text-orange-200">문제은행 학습 대시보드</p>
+        <h2 className="mt-2 text-5xl font-black">Lv.{level}</h2>
+        <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/15"><div className="h-full rounded-full bg-orange-300" style={{ width: `${levelProgress}%` }} /></div>
+        <p className="mt-3 text-sm font-bold leading-6 text-slate-200">다음 레벨까지 {Math.max(0, nextLevelXp - progress.xp)} XP · 예상 합격 가능성 {passProbability}%</p>
       </div>
-      <div className="grid grid-cols-2 gap-3">
-        <StatPill label="학습 시간" value={`${studyMinutes}분`} />
-        <StatPill label="푼 문제" value={progress.totalAnswered ?? 0} />
+      <div className="grid grid-cols-2 gap-2">
+        <StatPill label="오늘 푼 문제" value={progress.todayAnswered ?? 0} />
+        <StatPill label="누적 문제" value={progress.totalAnswered ?? 0} />
         <StatPill label="정답률" value={`${getAccuracy(progress)}%`} />
+        <StatPill label="총 학습" value={`${studyMinutes}분`} />
         <StatPill label="오늘 복습" value={`${dueToday}개`} />
+        <StatPill label="마스터" value={mastered} />
       </div>
-      <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
-        <h3 className="text-lg font-black text-black">주간 학습</h3>
-        <div className="mt-4 flex h-24 items-end gap-2">
-          {[20, 45, 28, 70, 52, 88, Math.max(12, Math.min(100, progress.todayAnswered * 12))].map((height, index) => (
-            <div key={index} className="flex flex-1 flex-col items-center gap-2">
-              <div className="w-full rounded-t-2xl bg-lime-200" style={{ height: `${height}%` }} />
-              <span className="text-[10px] font-black text-stone-400">{index + 1}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
+      <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
         <h3 className="text-lg font-black">약점 유형 분석: {weakness}</h3>
         <div className="mt-3 grid gap-2">
           {Object.entries(progress.statsByKind ?? defaultProgress.statsByKind).filter(([kind]) => ["vocab", "grammar", "reading", "listening"].includes(kind)).map(([kind, stats]) => (
@@ -1478,7 +1465,7 @@ function Dashboard({ progress }: { progress: Progress }) {
           ))}
         </div>
       </div>
-      <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm">
+      <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-orange-100">
         <h3 className="text-lg font-black">한국어 화자 우선순위</h3>
         <ul className="mt-3 space-y-2 text-sm font-bold leading-6 text-slate-700">
           <li className="rounded-2xl bg-orange-50 p-3">1. のに, そうだ처럼 한국어 번역이 같아도 감정·근거가 다른 문법을 먼저 잡기</li>
@@ -1525,27 +1512,27 @@ export default function Home() {
     : <Dashboard progress={progress} />;
 
   return (
-    <main className={`mx-auto min-h-screen w-full max-w-3xl px-4 pb-[calc(220px+env(safe-area-inset-bottom))] pt-5 sm:px-6 lg:pb-[180px] ${progress.darkMode ? "bg-slate-950 text-slate-100" : ""}`}>
+    <main className={`mx-auto min-h-screen w-full max-w-3xl px-4 pb-[calc(220px+env(safe-area-inset-bottom))] pt-4 sm:px-6 lg:pb-[180px] ${progress.darkMode ? "bg-slate-950 text-slate-100" : ""}`}>
       {isKakaoBrowser && <div className="mb-3 rounded-2xl bg-yellow-100 p-3 text-xs font-black text-yellow-900 ring-1 ring-yellow-200">카카오톡 브라우저에서 음성이 안 나오면 Chrome/Safari로 열어주세요.</div>}
       {audioWarning && <button type="button" onClick={() => setAudioWarning(false)} className="mb-3 w-full rounded-2xl bg-rose-100 p-3 text-left text-xs font-black text-rose-900 ring-1 ring-rose-200">브라우저에서 음성 재생이 막혔어요. 크롬 또는 사파리에서 열어주세요. (닫기)</button>}
-      <header className="mb-5 rounded-[2rem] border border-black/5 bg-white p-4 shadow-sm">
+      <header className="mb-4 rounded-[2rem] border border-white/80 bg-white/75 p-4 shadow-sm backdrop-blur">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.24em] text-orange-500">JLPT N3 · 30일 크램</p>
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-orange-600">JLPT N3 · 30일 크램</p>
             <h1 className="mt-1 text-xl font-black leading-tight text-slate-950 sm:text-2xl">JLPT N3 합격 트레이너</h1>
           </div>
-          <div className="rounded-2xl bg-lime-100 px-3 py-2 text-center">
-            <p className="text-xs font-black text-black/60">Day</p>
-            <p className="text-xl font-black text-black">{currentDay}/30</p>
+          <div className="rounded-2xl bg-orange-100 px-3 py-2 text-center">
+            <p className="text-xs font-black text-orange-700">Day</p>
+            <p className="text-xl font-black text-orange-950">{currentDay}/30</p>
           </div>
         </div>
         <div className="mt-3 grid grid-cols-2 gap-2">
-          <select value={progress.furiganaMode} onChange={(event) => setProgress((prev) => ({ ...prev, furiganaMode: event.target.value as FuriganaMode }))} className="rounded-2xl bg-stone-100 px-3 py-2 text-xs font-black text-stone-700">
+          <select value={progress.furiganaMode} onChange={(event) => setProgress((prev) => ({ ...prev, furiganaMode: event.target.value as FuriganaMode }))} className="rounded-2xl bg-slate-100 px-3 py-2 text-xs font-black text-slate-700">
             <option value="exam">요미가나 시험모드</option>
             <option value="learning">요미가나 학습모드</option>
             <option value="hidden">요미가나 숨김모드</option>
           </select>
-          <button type="button" onClick={() => setProgress((prev) => ({ ...prev, darkMode: !prev.darkMode }))} className="rounded-2xl bg-stone-100 px-3 py-2 text-xs font-black text-stone-700">다크모드 {progress.darkMode ? "ON" : "OFF"}</button>
+          <button type="button" onClick={() => setProgress((prev) => ({ ...prev, darkMode: !prev.darkMode }))} className="rounded-2xl bg-slate-100 px-3 py-2 text-xs font-black text-slate-700">다크모드 {progress.darkMode ? "ON" : "OFF"}</button>
         </div>
       </header>
 
@@ -1553,10 +1540,10 @@ export default function Home() {
 
       <div className="bottom-nav-spacer lg:hidden" aria-hidden="true" />
 
-      <nav aria-label="JLPT N3 주요 학습 메뉴" className="safe-bottom fixed inset-x-0 bottom-0 z-20 border-t border-black/5 bg-white/95 px-2 pt-2 shadow-[0_-8px_30px_rgba(17,17,17,0.06)] backdrop-blur lg:hidden">
+      <nav aria-label="JLPT N3 주요 학습 메뉴" className="safe-bottom fixed inset-x-0 bottom-0 z-20 border-t border-orange-100 bg-white/95 px-2 pt-1 shadow-[0_-12px_40px_rgba(15,23,42,0.10)] backdrop-blur lg:hidden">
         <div className="mx-auto grid max-w-3xl grid-cols-8 gap-0.5">
           {nav.map((item) => (
-            <button key={item.id} type="button" onClick={() => setTab(item.id)} className={`rounded-xl px-0.5 py-1 text-[10px] font-black leading-none ${tab === item.id ? "bg-black text-white" : "text-stone-500"}`}>
+            <button key={item.id} type="button" onClick={() => setTab(item.id)} className={`rounded-xl px-0.5 py-1 text-[10px] font-black leading-none ${tab === item.id ? "bg-slate-950 text-white" : "text-slate-600"}`}>
               <span className="block text-sm leading-none">{item.icon}</span><span className="mt-0.5 block">{item.label}</span>
             </button>
           ))}
